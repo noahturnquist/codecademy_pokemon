@@ -1,79 +1,66 @@
-#Create a Pokemon
+#Create New Pokemon
 class Pokemon:
-    def __init__(self, name, level, poke_type, max_health, current_health, awake):
+    def __init__(self, name, elem_type, max_health, attacks):
         self.name = name
-        self.level = level
-        self.poke_type = poke_type
+        self.elem_type = elem_type
         self.max_health = max_health
-        self.current_health = current_health
-        self.awake = awake
+        self.attacks = attacks
+        self.current_health = max_health
+        self.attack_name = []
+        self.attack_strength = []
 
-        self.stats = {
+    #Stat read out
+    def stat_read(self):
+        temp_stats = {
             "Name": self.name,
-            "Level": self.level,
-            "Type": self.poke_type,
-            "Max Health": self.max_health,
-            "Current Health": self.current_health,
-            "Awake?": self.awake
+            "Type": self.elem_type,
+            "Health": self.current_health
         }
-    #Print Pokemon Stats
-    def read_stats(self):
-        for value, key in self.stats.items():
-            print (value + ": " + str(key))
-
-
-#Player
-class Player:
-    def __init__(self):
-        self.pokemon = {}
-
-    def add_pokemon(self, new_pokemon):
-        slot = 1
-        for pair in self.pokemon:
-            slot += 1
-            return slot
-        self.pokemon["Pokemon " + str(slot)] = new_pokemon
-
-    def __repr__(self):
-        return self.pokemon
-
-#Player 1
-player = Player()
-
-#Starter Pokemon
-bulbasaur = Pokemon("Bulbasaur", 1, "grass", 45, 45, True)
-charmander = Pokemon("Charmander", 1, "fire", 39, 39, True)
-squirtle = Pokemon("Squirtle", 1, "water", 44, 44, True)
-
-#Play game
-class Play:
-    #Choose starter pokemon
-    def start_game(self):
-        print ("Welcome player. Please pick a number 1-3 to choose the cooresponding Pokemon as your starter.")
+        for value, key in temp_stats.items():
+            print (value + " : " + str(key))
         print ("")
-        print ("1.")
-        bulbasaur.read_stats()
-        print ("")
-        print ("2.")
-        charmander.read_stats()
-        print ("")
-        print ("3.")
-        squirtle.read_stats()
-        print ("")
-        temp_choice = int(input("Choose your starter pokemon: "))
-        if temp_choice == 1:
-            player.pokemon["Pokemon 1"] = bulbasaur
-        elif temp_choice == 2:
-            player.pokemon["Pokemon 1"] = charmander
-        elif temp_choice == 3:
-            player.pokemon["Pokemon 1"] = squirtle
-        print ("")
-        print("You have choosen {pokemon}".format(pokemon = player.pokemon))
+        att_index = 0
+        for value, key in self.attacks.items():
+            att_index += 1
+            print (str(att_index) + ". " + value + " : " + str(key))
 
-        
+    #Prep pokemon for battle
+    def battle_ready(self):
+        for value, key in self.attacks.items():
+            self.attack_name.append(value)
+            self.attack_strength.append(key)
 
-#Debug
-#current_game = Play()
-#current_game.start_game()
-player.add_pokemon(charmander)
-print (player.pokemon)
+#Test Pokemon
+ninetales = Pokemon("Ninetales", "fire", 73, {"Ember": 20, "Quick Attack": 20})
+machamp = Pokemon("Machamp", "fighting", 90, {"Dynamic Punch": 30, "Vital Punch": 20})
+
+#Duke it out
+class Battle:
+    def __init__(self, poke_1, poke_2):
+        self.poke_1 = poke_1
+        self.poke_2 = poke_2
+        self.poke_1.battle_ready()
+
+    #Read out for each user turn
+    def read_out(self):
+        print ("YOUR POKEMON")
+        self.poke_1.stat_read()
+        print ("")
+        print ("OPPOSING POKEMON:")
+        self.poke_2.stat_read()
+
+    def attack(self):
+        choice = int(input("Please pick an attack: "))
+        if choice == 1:
+            self.poke_2.current_health =- self.poke_1.attack_strength[choice - 1]
+            print ("You attacked with {name} for {damage} damage.".format(name = self.poke_1.attack_name[choice - 1], damage = self.poke_1.attack_strength[choice - 1]))
+
+     #User Turn
+    def user_turn(self):
+        print (self.poke_1.attack_strength[1])
+        self.read_out()
+        self.attack()
+
+#Run
+test_battle = Battle(ninetales, machamp)
+test_battle.user_turn()
