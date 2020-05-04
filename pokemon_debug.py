@@ -1,13 +1,27 @@
-lst_values = []
-lst_keys = []
-dicts = {"a": 1, "b": 2}
+import random
 
-def loopit():
-    for key, value in dicts.items():
-        lst_values.append(value)
-        lst_keys.append(key)
+class Test:
+    def __init__(self, num, lists):
+        self.num = num
+        self.lists = lists
 
-loopit()
+lst = []
+for num in range(0,5):
+    lst.append(str(num) + "ayyyy")
 
-print (lst_values[1])
-print (lst_keys)
+print(lst)
+ran_num = random.randint(1,5)
+
+test_instance = Test(ran_num, lst)
+
+class Internal:
+    def __init__(self, thing):
+        self.thing = thing
+
+    def call(self):
+        print (self.thing.num)
+        print (self.thing.lists[self.thing.num - 1])
+
+
+test_internal = Internal(test_instance)
+test_internal.call()

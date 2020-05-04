@@ -1,3 +1,5 @@
+import random
+
 #Create New Pokemon
 class Pokemon:
     def __init__(self, name, elem_type, max_health, attacks):
@@ -40,6 +42,10 @@ class Battle:
         self.poke_1 = poke_1
         self.poke_2 = poke_2
         self.poke_1.battle_ready()
+        self.poke_2.battle_ready()
+        self.turn_id = 0
+        self.choice = 0
+        self.comp_choice = 0
 
     #Read out for each user turn
     def read_out(self):
@@ -49,17 +55,47 @@ class Battle:
         print ("OPPOSING POKEMON:")
         self.poke_2.stat_read()
 
-    def attack(self):
-        choice = int(input("Please pick an attack: "))
-        if choice == 1:
-            self.poke_2.current_health =- self.poke_1.attack_strength[choice - 1]
-            print ("You attacked with {name} for {damage} damage.".format(name = self.poke_1.attack_name[choice - 1], damage = self.poke_1.attack_strength[choice - 1]))
+    #Prompt user move
+    def user_move(self):
+        self.choice = input("Please pick an attack: ")
+        return self.choice
 
-     #User Turn
+    #Select random computer attack
+    def comp_move(self):
+        self.comp_choice = random.randint(1, 2)
+        return self.comp_choice
+
+    #Deal damage and attack read out
+    def attack(self):
+        if self.turn_id % 2 != 0:      
+            try:
+                choice_int = int(self.choice)
+                if choice_int > 0 and choice_int <= 4:
+                    self.poke_2.current_health -= self.poke_1.attack_strength[choice_int - 1]
+                    print ("You attacked with {name} for {damage} damage.".format(name = self.poke_1.attack_name[choice_int - 1], damage = self.poke_1.attack_strength[choice_int - 1]))
+            except ValueError:
+                print ("Please pick a valid attack. (1-4)")
+        elif self.turn_id % 2 == 0:
+            comp_choice_int = (self.comp_choice)
+            self.poke_1.current_health -= self.poke_2.attack_strength[comp_choice_int - 1]
+            print ("You were attacked with {name} for {damage} damage.".format(name = self.poke_2.attack_name[comp_choice_int - 1], damage = self.poke_2.attack_strength[comp_choice_int - 1])) 
+
+    #User Turn
     def user_turn(self):
-        print (self.poke_1.attack_strength[1])
-        self.read_out()
-        self.attack()
+        while self.poke_1.current_health > 0 and self.poke_2.current_health > 0:
+            self.turn_id += 1
+            print (self.turn_id)
+            self.read_out()
+            self.user_move()
+            print ()
+            self.attack()
+            self.turn_id += 1
+            print ()
+            print (self.turn_id)
+            self.comp_move()
+            self.attack()
+            print ()
+
 
 #Run
 test_battle = Battle(ninetales, machamp)
