@@ -24,15 +24,10 @@ class Pokemon:
         for value, key in temp_stats.items():
             print (value + " : " + str(key))
         print ("")
-        att_index = 0
-        for name in self.attack_name:
-            for val in self.attack_strength:
-                att_index += 1
-                print (str(att_index) + "." + name + " : " + str(val))
-        for name in self.heal_name:
-            for val in self.heal_strength:
-                att_index += 1
-                print (str(att_index) + "." + name + " : " + str(val) + "(HEAL)")            
+        move_index = 0
+        for value, key in self.attacks.items():
+            move_index += 1
+            print ("{move}. {name} : {power} ({type})".format(move = move_index, name = value, power = key[0], type = key[1])) 
 
     #Prep pokemon for battle
     def battle_ready(self):
